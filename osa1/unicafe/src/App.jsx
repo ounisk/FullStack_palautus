@@ -25,6 +25,22 @@ const Button = ({handleClick, text}) => (
   </button>
 )
 
+const Statistics = (props) => {
+  console.log(props)
+  return(
+    <div>
+    <p>good {props.parts[0]}</p>
+    <p>neutral {props.parts[1]}</p>
+    <p>bad {props.parts[2]}</p>
+    <p>all {props.parts[3]}</p>
+    <p> average {(props.parts[0]*1+props.parts[1]*0+props.parts[2]*-1 )/props.parts[3]}</p>
+    <p> positive {(props.parts[0] / props.parts[3])*100} %</p>
+    </div>  
+  )
+
+
+}
+
 const App = () => {
   // tallenna napit omaan tilaansa
   const headers = {
@@ -36,6 +52,9 @@ const App = () => {
   const [total, setTotal] = useState(0)
 
 
+  const statistics = {
+    parts: [good, neutral, bad, total]
+  }  
 const handleGoodClick = () =>{
     /*setClicks({...clicks, good: clicks.good + 1})*/
     /*{setAll(allClicks.concat('G'))
@@ -67,12 +86,7 @@ const handleGoodClick = () =>{
       <Button handleClick ={handleBadClick} text='bad' />
     
       <HeaderStat parts ={headers.parts}/>
-      <p>good {good}</p>
-      <p>neutral {neutral}</p>
-      <p>bad {bad}</p>
-      <p>all {total}</p>
-      <p> average {(good*1+neutral*0+bad*-1 )/ total}</p>
-      <p> positive {(good / total)*100} %</p>
+      <Statistics parts = {statistics.parts} />
      
     </div>
   )
