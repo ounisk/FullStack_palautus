@@ -10,7 +10,7 @@ const Header = (props) => {
   )
 }
 
-const Statistics = (props) => {
+const HeaderStat = (props) => {
   console.log(props)
   return (
     <div>
@@ -19,7 +19,7 @@ const Statistics = (props) => {
   )
 }
 
-const Button = ({handleClick, text}) => (    /*refaktoroituna*/
+const Button = ({handleClick, text}) => (
   <button onClick={handleClick}>
     {text}
   </button>
@@ -33,36 +33,46 @@ const App = () => {
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
+  const [total, setTotal] = useState(0)
 
 
-/*const handleGoodClick = () =>
+const handleGoodClick = () =>{
     /*setClicks({...clicks, good: clicks.good + 1})*/
     /*{setAll(allClicks.concat('G'))
     /*console.log('good before', good)*/
-    /*const updatedGood = good + 1
+    const updatedGood = good + 1
     setGood(updatedGood)
     /*console.log('good after', good)*/
-    /*setTotal(updatedGood + updatedNeutral + updatedBad)
+    setTotal(updatedGood + neutral + bad)
     }
 
-  const handleNeutralClick = () =>
-    setClicks({...clicks, neutral: clicks.neutral + 1})
+  const handleNeutralClick = () => {
+    const updatedNeutral = neutral + 1
+    setNeutral(updatedNeutral)
+    setTotal(good + updatedNeutral + bad)
+    }
     
-  const handleBadClick = () =>
-    setClicks({...clicks, bad: clicks.bad + 1})*/  
+  const handleBadClick = () => {
+    const updatedBad = bad + 1
+    setBad(updatedBad)
+    setTotal(good + neutral + updatedBad)
+    }
   
 
   return (
     <div>
       <Header parts ={headers.parts}/>
-      <button onClick={() => setGood(good + 1)}>good</button>
-      <button onClick={() => setNeutral(neutral + 1)}>neutral</button>
-      <button onClick={() => setBad(bad + 1)}>bad</button>
+      <Button handleClick ={handleGoodClick} text='good' />
+      <Button handleClick ={handleNeutralClick} text='neutral' />
+      <Button handleClick ={handleBadClick} text='bad' />
     
-      <Statistics parts ={headers.parts}/>
+      <HeaderStat parts ={headers.parts}/>
       <p>good {good}</p>
       <p>neutral {neutral}</p>
       <p>bad {bad}</p>
+      <p>all {total}</p>
+      <p> average {(good*1+neutral*0+bad*-1 )/ total}</p>
+      <p> positive {(good / total)*100} %</p>
      
     </div>
   )
