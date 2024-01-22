@@ -27,19 +27,27 @@ const Button = ({handleClick, text}) => (
 
 const Statistics = (props) => {
   console.log(props)
-  return(
-    <div>
-    <p>good {props.parts[0]}</p>
-    <p>neutral {props.parts[1]}</p>
-    <p>bad {props.parts[2]}</p>
-    <p>all {props.parts[3]}</p>
-    <p> average {(props.parts[0]*1+props.parts[1]*0+props.parts[2]*-1 )/props.parts[3]}</p>
-    <p> positive {(props.parts[0] / props.parts[3])*100} %</p>
-    </div>  
-  )
+  if (props.parts[4].length === 0) {
+    return (
+      <div>
+        No feedback given
+      </div>
+      )
+    }
+
+    return(
+      <div>
+      <p>good {props.parts[0]}</p>
+      <p>neutral {props.parts[1]}</p>
+      <p>bad {props.parts[2]}</p>
+      <p>all {props.parts[3]}</p>
+      <p> average {(props.parts[0]*1+props.parts[1]*0+props.parts[2]*-1 )/props.parts[3]}</p>
+      <p> positive {(props.parts[0] / props.parts[3])*100} %</p>
+      </div>  
+    )
 
 
-}
+  }
 
 const App = () => {
   // tallenna napit omaan tilaansa
@@ -50,14 +58,15 @@ const App = () => {
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
   const [total, setTotal] = useState(0)
+  const [allClicks, setAll] = useState([])
 
 
   const statistics = {
-    parts: [good, neutral, bad, total]
+    parts: [good, neutral, bad, total, allClicks]
   }  
-const handleGoodClick = () =>{
+  const handleGoodClick = () =>{
     /*setClicks({...clicks, good: clicks.good + 1})*/
-    /*{setAll(allClicks.concat('G'))
+    setAll(allClicks.concat('G'))
     /*console.log('good before', good)*/
     const updatedGood = good + 1
     setGood(updatedGood)
@@ -66,12 +75,14 @@ const handleGoodClick = () =>{
     }
 
   const handleNeutralClick = () => {
+    setAll(allClicks.concat('N'))
     const updatedNeutral = neutral + 1
     setNeutral(updatedNeutral)
     setTotal(good + updatedNeutral + bad)
     }
     
   const handleBadClick = () => {
+    setAll(allClicks.concat('B'))
     const updatedBad = bad + 1
     setBad(updatedBad)
     setTotal(good + neutral + updatedBad)
