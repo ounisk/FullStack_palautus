@@ -97,7 +97,7 @@ const App = () => {
     setBad(updatedBad)
     setTotal(good + neutral + updatedBad)
     }
-  
+    
 
   return (
     <div>
@@ -105,10 +105,10 @@ const App = () => {
       <Button handleClick ={handleGoodClick} text='good' />
       <Button handleClick ={handleNeutralClick} text='neutral' />
       <Button handleClick ={handleBadClick} text='bad' />
-    
+
       <HeaderStat parts ={headers.parts}/>
-      <Statistics parts = {statistics.parts} />
-     
+      <Statistics parts = {statistics.parts} /> 
+
     </div>
   )
 }
