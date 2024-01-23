@@ -47,12 +47,30 @@ const Statistics = (props) => {
 
     return(
       <div>
-      <StatisticLine text='good' value = {props.parts[0]}/>
-      <StatisticLine text='neutral' value = {props.parts[1]}/>
-      <StatisticLine text='bad' value = {props.parts[2]}/>
-      <StatisticLine text ='all' value = {props.parts[3]}/>
-      <StatisticLine text='average' value = {(props.parts[0]*1+props.parts[1]*0+props.parts[2]*-1 )/props.parts[3]}/>
-      <StatisticLine text='positive' value= {(props.parts[0] / props.parts[3])*100} percentage='%' />
+      <tr>  
+      <td><StatisticLine text='good' /> </td> 
+      <td><StatisticLine value = {props.parts[0]}/> </td>
+      </tr>
+      <tr>
+      <td><StatisticLine text='neutral' /> </td> 
+      <td><StatisticLine value = {props.parts[1]}/> </td>
+      </tr>
+      <tr>
+      <td><StatisticLine text='bad' /> </td>
+      <td><StatisticLine value = {props.parts[2]}/> </td>
+      </tr>
+      <tr>
+      <td><StatisticLine text ='all' /> </td>
+      <td><StatisticLine value = {props.parts[3]}/> </td>
+      </tr>
+      <tr>
+      <td><StatisticLine text='average' /> </td>
+      <td><StatisticLine value = {((props.parts[0]*1+props.parts[1]*0+props.parts[2]*-1 )/props.parts[3]).toFixed(1)}/> </td>
+      </tr>
+      <tr>
+      <td><StatisticLine text='positive' /> </td> 
+      <td><StatisticLine value= {((props.parts[0] / props.parts[3])*100).toFixed(1)} percentage='%' /> </td>
+      </tr>
       </div>  
     )
 
