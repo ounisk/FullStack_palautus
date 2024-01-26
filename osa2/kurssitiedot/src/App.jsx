@@ -8,6 +8,7 @@ const Course = (props) => {
     <div>
     <Header course = {course.name}/>
     <Content parts ={course.parts}/>
+    <Total parts = {course.parts}/>
     </div>
   )
 }
@@ -23,8 +24,21 @@ const Header = ({course} ) => {
     </div>
   )}
 
-const Total = ({ sum }) =>
-   <p>Number of exercises {sum}</p>
+const Total = ({ parts} ) =>{
+  console.log('summa', parts) 
+
+  //const initialValue = 0   //ei tarvita, https://medium.com/yavar/how-to-use-the-reduce-in-javascript-and-react-4bc8b5f8fa4b
+  
+  var totalExercises = parts.reduce((previousValue, currentValue) => {
+    return previousValue+currentValue.exercises;},0)
+
+    return(
+    <div>
+    <p><b>total of {totalExercises} exercises</b></p>
+    </div>
+  )}
+
+
 
 const Part = ( props) => {
    console.log('part', props) 
@@ -43,12 +57,14 @@ const Content = ({parts}) => {
   return (
   <div>
     {parts.map(part =>
-      <Part key={part.id} part={part.name} exercises={part.exercises} />
-    )}
+      <Part key={part.id} part={part.name} exercises={part.exercises}/>)}
+      
   </div>
-
+//
    )
    } 
+
+   //{parts.map(part => <Total key={part.id} part={part.name} exercises={part.exercises} />)} ei tarvita Contentissa
 
 
 const App = () => {
@@ -71,6 +87,11 @@ const App = () => {
         exercises: 14,
         id: 3
       },
+      {
+        name: 'Redux',
+        exercises: 11,
+        id: 4
+      }
     ]
   }
 
