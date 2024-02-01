@@ -22,12 +22,22 @@ const Persons = (props) => {
   )
 }
 
-const Personform = (props) => {
-  console.log('formista tulevat', props)
-  const {personform} = props
+const Personform = ({onSubmit, newName, newNumber, handleNameChange, handleNumberChange} ) => {
+  //console.log('formista tulevat', props)
+  //const {personform} = props
   return (
-
-    <div> onChange={handleNameChange}</div>
+      <form onSubmit={onSubmit}>
+          <div>name:<input
+            value={newName}
+            onChange={handleNameChange} /> 
+            </div>
+          <div>number: <input
+            value={newNumber}  
+            onChange={handleNumberChange} /> </div>
+            <div> 
+          <button type="submit">add</button>
+          </div>
+      </form>
   )
 }
 
@@ -47,6 +57,7 @@ const App = () => {
 
   const addName = (event) => {
     event.preventDefault()
+    //event.preventDefault()
     
     if (persons.find(person =>  person.name === newName)) {
       console.log('oli jo') 
@@ -67,15 +78,13 @@ const App = () => {
       setPersons(persons.concat(personObject))                         // huom! concat, koska ei saa muuttaa tilaa suoraan!!!
       setNewName('') 
       setNewNumber('')
+      console.log('onko tyhjä', newName)
       
 
       //console.log('button clicked', event.target)
     }
     //event.preventDefault()                                             //pitääkö olla täällä, toimii kyllä vanhalla paikallakin
     }
-
-  //const personsToShow = showAll    
-  //    ? persons    : persons.filter(person => person.name.includes(value))
 
 
   const handleNameChange = (event) => {
@@ -92,11 +101,7 @@ const App = () => {
     console.log('filterristä', event.target.value)
     setNewFilter(event.target.value) 
   }
-    //const value = event.target.value
-    //const filtered = persons.filter(person => person.name.includes(value))
-    //setFilteredPersons(event.target.value)
-    //setFilteredPersons(filtered)
-    //console.log('filter', filtered)} 
+ 
 
   return (  // tänne Personform tai Filter komponentti??? siis ylös luo (t.2.10)
     <div>
@@ -104,24 +109,17 @@ const App = () => {
       filter shown with: <input
           //value={newFilter}
           onChange={handleFilter } />
-          
-      <form onSubmit={addName}>
-          <h2>Add new number</h2>
-          <div>name:<input
-             value={newName}
-            onChange={handleNameChange} /> 
-            </div>
-          <div>number: <input
-            value={newNumber}  
-            onChange={handleNumberChange} /> </div>
-   
-          <button type="submit">add</button>
-  
-      </form>
+
+      <h2>Add new number</h2>          
+          <Personform onSubmit={addName}
+            newName ={newName}
+            handleNameChange={handleNameChange}
+            newNumber= {newNumber}
+            handleNumberChange ={handleNumberChange}
+            />
+      
       <h2>Numbers</h2>
-      {persons.filter(person => person.name.toLowerCase().includes(newFilter)).map(person =>
-        <Person key={person.name} person={person}/>
-        )}        
+          <Persons persons ={persons.filter(person => person.name.includes(newFilter))} /> 
    
     </div>
   )
@@ -132,10 +130,12 @@ const App = () => {
 //<Person key={person.name} person={person}/>
 export default App
 
-//{filteredPersons.map(person =>
-//<Person key={person.name} person={person}/>)}
 
 
-// {persons.filter(person => person.name.includes(newFilter)).map(person =>
-//<Persons persons={persons}/>
-//)}   /ei näin, tällä tuli kaikki yhtäaikaa
+// tällä toimii hyvin:
+//{persons.filter(person => person.name.toLowerCase().includes(newFilter)).map(person =>
+//  <Person key={person.name} person={person}/>
+//  )} 
+
+// muokkaus, että hyödyntää kaikki henkilöt renderöivä komponenttia, toimii hyvin:
+// <Persons persons ={persons.filter(person => person.name.includes(newFilter))} />
