@@ -1,5 +1,5 @@
-import { useState } from 'react'
-
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 
 const Person = (props) =>{
   console.log('propsit', props)
@@ -43,19 +43,34 @@ const Personform = ({onSubmit, newName, newNumber, handleNameChange, handleNumbe
 
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456' },
-    { name: 'Ada Lovelace', number: '39-44-5323523' },
-    { name: 'Dan Abramov', number: '12-43-234345' },
-    { name: 'Mary Poppendieck', number: '39-23-6423122' }
-  ]) 
+  //const [persons, setPersons] = useState([
+  //  { name: 'Arto Hellas', number: '040-123456' },
+  //  { name: 'Ada Lovelace', number: '39-44-5323523' },
+  //  { name: 'Dan Abramov', number: '12-43-234345' },
+  //  { name: 'Mary Poppendieck', number: '39-23-6423122' }
+  //]) koska nyt siirryttytietojen hakuun palvelimelta, ks. alla
+  
+  const [persons, setPersons] = useState([])
 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
-  //const [filteredPersons, setFilteredPersons] = useState(persons)
+ 
 
-  const addName = (event) => {
+
+  useEffect(() => {
+    console.log('effect')
+    axios 
+      .get('http://localhost:3001/persons')
+      .then(response => {
+          console.log('promise fulfilled') 
+          setPersons(response.data)
+        })
+    }, [])
+    console.log('render', persons.length, 'persons')
+ 
+ 
+    const addName = (event) => {
     event.preventDefault()
     //event.preventDefault()
     
@@ -103,7 +118,7 @@ const App = () => {
   }
  
 
-  return (  // tänne Personform tai Filter komponentti??? siis ylös luo (t.2.10)
+  return (
     <div>
       <h2>Phonebook</h2>
       filter shown with: <input
