@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import personService from './services/persons'
 
 const Person = (props) =>{
   console.log('propsit', props)
@@ -60,11 +61,11 @@ const App = () => {
 
   useEffect(() => {
     console.log('effect')
-    axios 
-      .get('http://localhost:3001/persons')
-      .then(response => {
+    personService            //axios 
+      .getAll()               ///('http://localhost:3001/persons')
+      .then(initialPersons => {
           console.log('promise fulfilled') 
-          setPersons(response.data)
+          setPersons(initialPersons)
         })
     }, [])
     console.log('render', persons.length, 'persons')
@@ -91,10 +92,10 @@ const App = () => {
       //,id: persons.name
       }
       
-      axios
-      .post('http://localhost:3001/persons', personObject)
-      .then(response => {
-        setPersons(persons.concat(response.data))                         // huom! concat, koska ei saa muuttaa tilaa suoraan!!!
+      personService            //axios
+      .create(personObject)                    //post('http://localhost:3001/persons', personObject)
+      .then(returnedPerson => {
+        setPersons(persons.concat(returnedPerson))                         // huom! concat, koska ei saa muuttaa tilaa suoraan!!!
         setNewName('') 
         setNewNumber('')
         console.log('onko tyhjä', newName)
