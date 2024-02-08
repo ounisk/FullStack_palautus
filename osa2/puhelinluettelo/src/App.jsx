@@ -49,7 +49,7 @@ const App = () => {
   //  { name: 'Dan Abramov', number: '12-43-234345' },
   //  { name: 'Mary Poppendieck', number: '39-23-6423122' }
   //]) koska nyt siirryttytietojen hakuun palvelimelta, ks. alla
-  
+
   const [persons, setPersons] = useState([])
 
   const [newName, setNewName] = useState('')
@@ -90,11 +90,15 @@ const App = () => {
       //,important: Math.random() > 0.5,
       //,id: persons.name
       }
-      setPersons(persons.concat(personObject))                         // huom! concat, koska ei saa muuttaa tilaa suoraan!!!
-      setNewName('') 
-      setNewNumber('')
-      console.log('onko tyhjä', newName)
       
+      axios
+      .post('http://localhost:3001/persons', personObject)
+      .then(response => {
+        setPersons(persons.concat(response.data))                         // huom! concat, koska ei saa muuttaa tilaa suoraan!!!
+        setNewName('') 
+        setNewNumber('')
+        console.log('onko tyhjä', newName)
+      })
 
       //console.log('button clicked', event.target)
     }
