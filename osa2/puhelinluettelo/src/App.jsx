@@ -1,16 +1,39 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+//import axios from 'axios'
 import personService from './services/persons'
+//import persons from './services/persons'
+//import {removePerson} from './src/App'
+
+
+const removePerson = (props) => {
+  const {person} = props
+  console.log("poistettava id", person.id)
+  console.log("poistettava name", person.name)
+ 
+  if (window.confirm(`Delete ${person.name}`)){
+   personService
+    .remove(person.id)
+    .then(() =>
+      personService
+       .getAll()
+        .then ((response => console.log(response)))
+//        .then((response => setPersons(response)))
+      )
+}}
+
+
 
 const Person = (props) =>{
   console.log('propsit', props)
   const { person } = props
   return (
     <div>
-    {person.name} {person.number}
+    {person.name} {person.number} <button onClick={() =>
+     removePerson({person })}>delete</button>   
     </div>
   )
 }
+// removePerson({person })}>delete</button> 
 
 const Persons = (props) => {
   console.log('kaikki_pers', props)
@@ -18,10 +41,13 @@ const Persons = (props) => {
   return (
     <div>
       {persons.map(person => 
-          <Person key={person.name} person={person}/>)}
+          <Person key={person.name} person={person} />
+         )} 
+          
     </div>
   )
 }
+
 
 const Personform = ({onSubmit, newName, newNumber, handleNameChange, handleNumberChange} ) => {
   //console.log('formista tulevat', props)
@@ -76,12 +102,24 @@ const App = () => {
     //event.preventDefault()
     
     if (persons.find(person =>  person.name === newName)) {
-      console.log('oli jo') 
-      alert(`${newName} is already added to phonebook`)
-      setNewName('')
-      setNewNumber('')
+      console.log('oli jo')
+      const person = persons.find(person => person.name === newName) 
+      const changedNumber = { ...person, number: newNumber } 
+      if (window.confirm(`${newName} is already added to phonebook, replace the old numer with a new one?`)){ 
+        personService                              
+        .update(person.id, changedNumber)          
+        .then(returnedPerson => { 
+            console.log('returned person', returnedPerson)
+            console.log('muutos person_id', returnedPerson.id)  
+            setPersons(persons.map(person => person.id !== returnedPerson.id ? person : returnedPerson))   
+          })
+        
+      //alert(`${newName} is already added to phonebook`)
+        setNewName('')
+        setNewNumber('')
      
-    }
+      }}
+
     else {
     event.preventDefault()
     console.log('button clicked', event.target)
@@ -104,8 +142,8 @@ const App = () => {
       //console.log('button clicked', event.target)
     }
     //event.preventDefault()                                             //pitääkö olla täällä, toimii kyllä vanhalla paikallakin
-    }
-
+    }  
+  
 
   const handleNameChange = (event) => {
       console.log(event.target.value)
@@ -122,6 +160,8 @@ const App = () => {
     setNewFilter(event.target.value) 
   }
  
+
+
 
   return (
     <div>
