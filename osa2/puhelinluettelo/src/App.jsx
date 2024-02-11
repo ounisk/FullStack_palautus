@@ -17,37 +17,6 @@ const Notification = ({ message }) => {
   )
 }
 
-
-//const removePerson = (props) => {
-//  const {person} = props
-//  console.log("poistettava id", person.id)
-//  console.log("poistettava name", person.name)
- 
-//  if (window.confirm(`Delete ${person.name}`)){
-//   personService
-//    .remove(person.id)
-//    .then(() =>
-//      personService
-//       .getAll()
-//        .then ((response => console.log(response)))
-
-     //   .then((response => setPersons(response)))
-         //.catch(error => {
-//        )
-      //console.log("vahvistus poistosta")
-      //setErrorMessage(
-      //const errormsg = (person.name)
-      //<Notification key={errormsg} message={errormsg} />
-      //setTimeout(() => {
-      //  setErrorMessage(null)
-      //  }, 5000)
-//      }
-//    }
-      
-
-
-
-//const Person = (props) =>{
   const Person = ({person,remove}) => {
   //console.log('person person', person)   // (props)
   //const { person } = props
@@ -58,7 +27,7 @@ const Notification = ({ message }) => {
     </div>
   )
 }
-// removePerson({person })}>delete</button> 
+
 
 const Persons = ({persons, remove}) => {
   //console.log('kaikki_pers', props)
@@ -132,7 +101,7 @@ const App = () => {
       console.log('oli jo')
       const person = persons.find(person => person.name === newName) 
       const changedNumber = { ...person, number: newNumber } 
-      if (window.confirm(`${newName} is already added to phonebook, replace the old numer with a new one?`)){ 
+      if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)){ 
         personService                              
         .update(person.id, changedNumber)          
         .then(returnedPerson => { 
@@ -140,6 +109,14 @@ const App = () => {
             console.log('muutos person_id', returnedPerson.id)  
             setPersons(persons.map(person => person.id !== returnedPerson.id ? person : returnedPerson))   
           })
+
+          console.log("vahvistus numeron muutoksesta")
+          setErrorMessage(
+            `${person.name}'s number was updated `
+              )
+          setTimeout(() => {
+            setErrorMessage(null)
+            }, 5000)
         
       //alert(`${newName} is already added to phonebook`)
         setNewName('')
@@ -187,7 +164,7 @@ const App = () => {
       console.log("poistettava id", person.id)
       console.log("poistettava name", person.name)
      
-      if (window.confirm(`Delete ${person.name}`)){
+      if (window.confirm(`Delete ${person.name}?`)){
        personService
         .remove(person.id)
         .then(() =>
@@ -199,6 +176,13 @@ const App = () => {
             
           )}    
           console.log("siivottu lista", persons)  
+          console.log("vahvistus poistosta")
+          setErrorMessage(
+            `${person.name} was deleted`
+              )
+          setTimeout(() => {
+            setErrorMessage(null)
+            }, 5000)
        }  
 
   const handleNameChange = (event) => {
