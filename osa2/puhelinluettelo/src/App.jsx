@@ -5,43 +5,70 @@ import personService from './services/persons'
 //import {removePerson} from './src/App'
 
 
-const removePerson = (props) => {
-  const {person} = props
-  console.log("poistettava id", person.id)
-  console.log("poistettava name", person.name)
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className="error">
+      {message}
+    </div>
+  )
+}
+
+
+//const removePerson = (props) => {
+//  const {person} = props
+//  console.log("poistettava id", person.id)
+//  console.log("poistettava name", person.name)
  
-  if (window.confirm(`Delete ${person.name}`)){
-   personService
-    .remove(person.id)
-    .then(() =>
-      personService
-       .getAll()
-        .then ((response => console.log(response)))
-//        .then((response => setPersons(response)))
-      )
-}}
+//  if (window.confirm(`Delete ${person.name}`)){
+//   personService
+//    .remove(person.id)
+//    .then(() =>
+//      personService
+//       .getAll()
+//        .then ((response => console.log(response)))
+
+     //   .then((response => setPersons(response)))
+         //.catch(error => {
+//        )
+      //console.log("vahvistus poistosta")
+      //setErrorMessage(
+      //const errormsg = (person.name)
+      //<Notification key={errormsg} message={errormsg} />
+      //setTimeout(() => {
+      //  setErrorMessage(null)
+      //  }, 5000)
+//      }
+//    }
+      
 
 
 
-const Person = (props) =>{
-  console.log('propsit', props)
-  const { person } = props
+//const Person = (props) =>{
+  const Person = ({person,remove}) => {
+  //console.log('person person', person)   // (props)
+  //const { person } = props
   return (
     <div>
     {person.name} {person.number} <button onClick={() =>
-     removePerson({person })}>delete</button>   
+     remove({person })} type="submit">delete</button>   
     </div>
   )
 }
 // removePerson({person })}>delete</button> 
 
-const Persons = (props) => {
-  console.log('kaikki_pers', props)
-  const {persons} = props
+const Persons = ({persons, remove}) => {
+  //console.log('kaikki_pers', props)
+  //const {persons} = props
+  console.log('persons tulee täältä', persons)
+  console.log('remove funktio', remove)
   return (
     <div>
       {persons.map(person => 
-          <Person key={person.name} person={person} />
+          <Person key={person.name} person={person} remove={remove} />
          )} 
           
     </div>
@@ -82,7 +109,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
- 
+  const [errorMessage, setErrorMessage] = useState('')
 
 
   useEffect(() => {
@@ -133,17 +160,46 @@ const App = () => {
       personService            //axios
       .create(personObject)                    //post('http://localhost:3001/persons', personObject)
       .then(returnedPerson => {
-        setPersons(persons.concat(returnedPerson))                         // huom! concat, koska ei saa muuttaa tilaa suoraan!!!
+        setPersons(persons.concat(returnedPerson))})                         // huom! concat, koska ei saa muuttaa tilaa suoraan!!!
+        
         setNewName('') 
         setNewNumber('')
+          
+      //.catch(error => {
+          console.log("vahvistus lisäyksestä")
+          setErrorMessage(
+            `${personObject.name} was added`
+              )
+          setTimeout(() => {
+            setErrorMessage(null)
+            }, 5000)
+         } //)
         console.log('onko tyhjä', newName)
-      })
+        
 
       //console.log('button clicked', event.target)
-    }
+      }//}
     //event.preventDefault()                                             //pitääkö olla täällä, toimii kyllä vanhalla paikallakin
-    }  
-  
+      
+    const removePerson = (props) => {
+      const {person} = props
+      const {id} = person.id
+      console.log("poistettava id", person.id)
+      console.log("poistettava name", person.name)
+     
+      if (window.confirm(`Delete ${person.name}`)){
+       personService
+        .remove(person.id)
+        .then(() =>
+          personService
+          .getAll()
+            //.then (()=>   // ((response => console.log(response)))
+            .then((response => setPersons(response)))
+            //setPersons(persons.filter((person) => person.id!=id))
+            
+          )}    
+          console.log("siivottu lista", persons)  
+       }  
 
   const handleNameChange = (event) => {
       console.log(event.target.value)
@@ -166,6 +222,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage} />
       filter shown with: <input
           //value={newFilter}
           onChange={handleFilter } />
@@ -179,7 +236,7 @@ const App = () => {
             />
       
       <h2>Numbers</h2>
-          <Persons persons ={persons.filter(person => person.name.includes(newFilter))} /> 
+          <Persons persons ={persons.filter(person => person.name.includes(newFilter))} remove ={removePerson} /> 
    
     </div>
   )
