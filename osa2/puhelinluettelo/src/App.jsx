@@ -6,9 +6,23 @@ import personService from './services/persons'
 
 
 const Notification = ({ message }) => {
-  if (message === null) {
+  console.log('message', message)
+  if (message === '') {      
+    console.log('eka notificaatio rivi')
     return null
-  }
+   }
+  
+   if (message === null) {      
+    console.log('toka notificaatio rivi')
+    return null
+   }
+
+  if (message.includes("server")){
+    return (
+    <div className="deleted">
+      {message}
+    </div>
+     ) } 
 
   return (
     <div className="error">
@@ -109,6 +123,14 @@ const App = () => {
             console.log('muutos person_id', returnedPerson.id)  
             setPersons(persons.map(person => person.id !== returnedPerson.id ? person : returnedPerson))   
           })
+        
+        .catch(error => {   
+          setErrorMessage(`Information of ${newName} was already deleted from the server`)})
+          .then(() =>
+          personService
+          .getAll()
+            //.then (()=>   // ((response => console.log(response)))
+            .then((response => setPersons(response))))  
 
           console.log("vahvistus numeron muutoksesta")
           setErrorMessage(
@@ -123,9 +145,11 @@ const App = () => {
         setNewNumber('')
      
       }}
-
+      
+    
     else {
     event.preventDefault()
+
     console.log('button clicked', event.target)
       const personObject = {                                         // tämä ao. pätkä lisää uuden noten listaan
         name: newName,
