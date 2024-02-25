@@ -163,6 +163,16 @@ const App = () => {
       .then(returnedPerson => {
         setPersons(persons.concat(returnedPerson))})                         // huom! concat, koska ei saa muuttaa tilaa suoraan!!!
         
+        .catch(error => {
+          // pääset käsiksi palvelimen palauttamaan virheilmoitusolioon näin
+          console.log(error.response.data)     // 3.19 tehtävään liittyvä
+          setErrorMessage(`${error.response.data.error}`)
+          setTimeout(() => {
+            setErrorMessage(null)
+            }, 5000)
+        })
+
+
         setNewName('') 
         setNewNumber('')
           
@@ -175,6 +185,7 @@ const App = () => {
             setErrorMessage(null)
             }, 5000)
          } //)
+
         console.log('onko tyhjä', newName)
         
 
