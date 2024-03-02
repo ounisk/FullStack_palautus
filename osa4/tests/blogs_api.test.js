@@ -11,15 +11,20 @@ const helper = require('./test_helper')
 const logger = require('../utils/logger')
 
 
-beforeEach(async () => {
-    await Blog.deleteMany({})
+//beforeEach(async () => {
+//    await Blog.deleteMany({})
     //let blogObject = new Blog(initialBlogs[0])
-    let blogObject =new Blog(helper.initialBlogs[0])
-    await blogObject.save()
+//    let blogObject =new Blog(helper.initialBlogs[0])
+//    await blogObject.save()
     //blogObject = new Blog(initialBlogs[1])
-    blogObject =new Blog(helper.initialBlogs[1])
-    await blogObject.save()})
+//    blogObject =new Blog(helper.initialBlogs[1])
+//    await blogObject.save()})
 
+
+beforeEach(async () => {         // beforeEach-metodin optimointi kuten materiaalissa, Mongoosen insertMany metodi
+    await Blog.deleteMany({})
+    await Blog.insertMany(helper.initialBlogs)
+})    
 
 test('blogs are returned as json', async () => {
   await api
