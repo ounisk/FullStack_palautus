@@ -27,6 +27,12 @@ blogsRouter.post('/', async (request, response) => {
     //}
     //console.log("body likes2", body.likes)
 
+    if (body.title == null || body.url == null) {     // t. 4.12
+      //console.log('puuttuva title tai url', body)
+      response.status(400).end()
+      return    // palaa takaisin jos täällä
+    }
+
     const blog = new Blog({
       title: body.title,
       author: body.author,
