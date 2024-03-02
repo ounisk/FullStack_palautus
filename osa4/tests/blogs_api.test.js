@@ -89,6 +89,38 @@ test('a new blog can be added ', async () => {
   })
 
 
+test('error if blog without title', async () => {
+    const newBlog = {
+        "author": "Zeus Zeus",
+        "url": "www.zeus.fi",
+        "likes": 50,
+    }
+    
+    await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+
+    //const blogsAfter = await helper.blogsInDb()
+    //assert.strictEqual(blogsAfter.length, helper.initialBlogs.length)
+    })
+
+
+test('error if blog without url', async () => {
+    const newBlog = {
+        "title": "Kreikka",
+        "author": "Mytilus Myrtille",
+        "likes": 99,
+    }
+    
+    await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+
+    //const blogsAfter = await helper.blogsInDb()
+    //assert.strictEqual(blogsAfter.length, helper.initialBlogs.length)
+    })
 
 
 
