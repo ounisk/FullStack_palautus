@@ -45,6 +45,12 @@ test('there are two blogs', async () => {
   })
 
 
+test('there is field id, not _id', async () => {
+    const response = await api.get('/api/blogs')
+    assert.notEqual(response.body[0].id, undefined)
+})
+
+
 after(async () => {
   await mongoose.connection.close()
 })
