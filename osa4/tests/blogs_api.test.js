@@ -144,7 +144,31 @@ describe ('deletion and modification of a blog', () =>{
       
         assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
       })
+
+    test ('a blog can be updated', async () => {
+        const blogsAtStart = await helper.blogsInDb()
+        const blogToUpdate = blogsAtStart[0]
+        //console.log('blogToUpdate_likes', blogToUpdate.likes)
+        //console.log('blogToUpdate_id', blogToUpdate.id)
+        const updatedBlog = {
+            "title": "Finland",
+            "author": "Matti Meikalainen",
+            "url": "www.meika.fi",
+            "likes": 2222,
+        }
+
+        await api
+            .put(`/api/blogs/${blogToUpdate.id}`)
+            .send(updatedBlog)
+            .expect(200)
+
+        const blogsAtEnd = await helper.blogsInDb()
+        //console.log('updatedBlog_likes', blogsAtEnd[0].likes)
+        assert.strictEqual(blogsAtEnd[0].likes, 2222)
+        })  
     })
+
+
 
 
 
