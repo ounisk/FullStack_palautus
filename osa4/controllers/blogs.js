@@ -11,15 +11,33 @@ blogsRouter.get('/', async (request, response) => {      // huom! ei siis enää
     })
 
 
-blogsRouter.post('/', (request, response) => {     // 4.10 muista muuttaa tämän async/await muototon
-const blog = new Blog(request.body)
+blogsRouter.post('/', async (request, response) => {
+    //const blog = new Blog(request.body)
+    //blog
+    //    .save()
+    //    .then(result => {
+    //    response.status(201).json(result)
+    //    })
+    const body =request.body
+    //console.log("body", body)
+    //console.log("body likes", body.likes)
 
-    blog
-        .save()
-        .then(result => {
-        response.status(201).json(result)
-        })
-    })
+    //if (body.likes == null) {      // joko näin tai ao. tavalla
+    //  body.likes = 0
+    //}
+    //console.log("body likes2", body.likes)
+
+    const blog = new Blog({
+      title: body.title,
+      author: body.author,
+      url: body.url,
+      likes: body.likes || 0,
+      })
+    
+    //console.log('blog', blog)
+    const savedBlog = await blog.save()
+    response.status(201).json(savedBlog)  
+  })
 
 
 module.exports = blogsRouter
