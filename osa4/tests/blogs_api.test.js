@@ -8,7 +8,7 @@ const app = require('../app')
 
 const api = supertest(app)
 const helper = require('./test_helper')
-
+const logger = require('../utils/logger')
 
 
 beforeEach(async () => {
@@ -62,6 +62,30 @@ test('a new blog can be added ', async () => {
     assert.strictEqual(response.body.length, helper.initialBlogs.length + 1)  // helper lisätty
   
     assert(contents.includes('Norge'))
+  })
+
+
+  test('if blog has no likes, default is 0', async () => {
+    const newBlog = {
+        "title": "Denmark",
+        "author": "Vikke Viikinki",
+        "url": "www.viikinki.fi",
+      }
+  
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+  
+    const blogsAfter = await helper.blogsInDb()
+    //const response = await api.get('/api/blogs')
+    const contents = blogsAfter.map(r => r.title)  
+
+    assert.strictEqual(blogsAfter.length, helper.initialBlogs.length + 1)  // helper lisätty
+    //logger.info('blogsAfter[2] likes', blogsAfter[2].likes)
+    assert.strictEqual(blogsAfter[2].likes, 0)
+    //assert(contents.includes('Denmark'))
   })
 
 
