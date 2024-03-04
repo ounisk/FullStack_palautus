@@ -4,9 +4,17 @@ const userSchema = mongoose.Schema({
    username: {
             type: String,
             required: true,
-            unique: true // username oltava yksikäsitteinen
+            minlength: 3,
+            unique: true                                   // username oltava yksikäsitteinen
         },
     name: String,
+
+    //password: {                                       ///lisätty 4.16
+    //  type:String,
+    //  required: true,
+    //  minlength: 3
+    //},
+
     passwordHash: String,
     blogs: [
         {
@@ -23,6 +31,7 @@ userSchema.set('toJSON', {
     delete returnedObject.__v
     // the passwordHash should not be revealed
     delete returnedObject.passwordHash
+    //delete returnedObject.password   //
   }
 })
 
