@@ -25,7 +25,9 @@ const logger = require('../utils/logger')
 
 beforeEach(async () => {         // beforeEach-metodin optimointi kuten materiaalissa, Mongoosen insertMany metodi
     await Blog.deleteMany({})
+    //await User.deleteMany({})
     await Blog.insertMany(helper.initialBlogs)
+    //await User.insertMany(helper.initialUser)
 })    
 
 test('blogs are returned as json', async () => {
@@ -48,17 +50,25 @@ test('there is field id, not _id', async () => {
 })
 
 describe('addition of a new blog', () => {
+
     test('a new blog can be added ', async () => {
+        const usersAtStart = await helper.usersInDb()
+
+        const user_id = usersAtStart[0].id    // jotta testaus toimii, niin 1.user, tällä tulee id
+        //console.log("user_id", user_id)
+
         const newBlog = {
             "title": "Norge",
             "author": "Heikki Heikalainen",
             "url": "www.heika.fi",
             "likes": 40,
+            "userId": user_id
         }
     
         await api
         .post('/api/blogs')
         .send(newBlog)
+        //console.log ("norjan blogi", newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
     
@@ -73,10 +83,16 @@ describe('addition of a new blog', () => {
 
 
     test('if blog has no likes, default is 0', async () => {
+        const usersAtStart = await helper.usersInDb()   // jotta testaus toimii, niin user db:n 1. 
+        const user_id = usersAtStart[0].id    //   ...laitetaan syöttäjäksi
+        //console.log("user_id", user_id)
+
         const newBlog = {
             "title": "Denmark",
             "author": "Vikke Viikinki",
             "url": "www.viikinki.fi",
+            "userId": user_id
+          
         }
     
         await api
@@ -223,6 +239,50 @@ describe('when there is initially one user at db', () => {
         assert.strictEqual(usersAtEnd.length, usersAtStart.length)
         })
     
+    test('creation fails with proper statuscode and message if username too short', async () => {
+        const usersAtStart = await helper.usersInDb()
+    
+        const newUser = {
+            username: 'bc',
+            name: 'Bertol Craig',
+            password: 'sala',
+        }
+    
+        const result = await api
+            .post('/api/users')
+            .send(newUser)
+            .expect(400)
+            .expect('Content-Type', /application\/json/)
+    
+        const usersAtEnd = await helper.usersInDb()
+        assert(result.body.error.includes('is shorter than the minimum allowed length (3)'))
+    
+        assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+        })
+
+    test('creation fails with proper statuscode and message if password too short', async () => {
+        const usersAtStart = await helper.usersInDb()
+    
+        const newUser = {
+            username: 'kuski',
+            name: 'Rally Driver',
+            password: '',
+        }
+    
+        const result = await api
+            .post('/api/users')
+            .send(newUser)
+            .expect(400)
+            .expect('Content-Type', /application\/json/)
+    
+        const usersAtEnd = await helper.usersInDb()
+        assert(result.body.error.includes('password must be at least 3 characters'))
+    
+        assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+        })    
+
+
+
     })
 
 
@@ -230,6 +290,6 @@ describe('when there is initially one user at db', () => {
 
 
 after(async () => {
-    await User.deleteMany({})    // lisätty tämä 4c) että tyhjentää user db:b
+    //await User.deleteMany({})    // lisätty tämä 4c) että tyhjentää user db:b
     await mongoose.connection.close()
 })
