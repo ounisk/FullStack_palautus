@@ -1,9 +1,10 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization:  Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1sdXVra2FpIiwiaWQiOiI2NWU0OGJlOTdhN2RmYzBkM2ViZmJkYmYiLCJpYXQiOjE3MDk2NjE1OTh9.68DTQrxsPzcPF-4rxRnkInbI_3nsgZ1T6sfp9sYWOmY
 
 {
-    "title": "NYT",
-    "author": "Nwe York Times",
-    "url": "www.nyt.com",
-    "likes":100
+    "title": "Koodauksen alkeiskurssi",
+    "author": "Keikku Koodari",
+    "url": "www.koodaus.fi",
+    "userId": "65e48be97a7dfc0d3ebfbdbf"
 }
