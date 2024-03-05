@@ -1,6 +1,19 @@
 const blogsRouter = require('express').Router()   // kaikki blogeihin liittyvät routet
 const Blog = require('../models/blog')
 const User = require('../models/user')
+const jwt = require('jsonwebtoken')     // muistiinpanojen luominen vain kirjautuneille
+
+
+const getTokenFrom = request => {
+    const authorization = request.get('authorization')
+      if (authorization && authorization.startsWith('Bearer ')) {
+      return authorization.replace('Bearer ', '')
+      }
+      return null
+    }
+
+
+
 
 blogsRouter.get('/', async (request, response) => {      // huom! ei siis enää tarvitse /api/blogs
     //Blog
@@ -14,15 +27,18 @@ blogsRouter.get('/', async (request, response) => {      // huom! ei siis enää
 
 
 blogsRouter.post('/', async (request, response) => {
-    //const blog = new Blog(request.body)
-    //blog
-    //    .save()
-    //    .then(result => {
-    //    response.status(201).json(result)
-    //    })
+    
     const body =request.body
 
-    const user = await User.findById(body.userId)      // lisäys 4c):ssä
+    const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)   // 4d)
+      if (!decodedToken.id) {
+        return response.status(401).json({ error: 'token invalid' })
+    } 
+    
+    const user = await User.findById(decodedToken.id)   // 4d)
+
+
+    //const user = await User.findById(body.userId)      // lisäys 4c):ssä
     //console.log("body", body)
     //console.log("body likes", body.likes)
 
