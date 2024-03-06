@@ -4,15 +4,13 @@ const User = require('../models/user')
 const jwt = require('jsonwebtoken')     // muistiinpanojen luominen vain kirjautuneille
 
 
-const getTokenFrom = request => {
-    const authorization = request.get('authorization')
-      if (authorization && authorization.startsWith('Bearer ')) {
-      return authorization.replace('Bearer ', '')
-      }
-      return null
-    }
-
-
+//const getTokenFrom = request => {
+//    const authorization = request.get('authorization')
+//      if (authorization && authorization.startsWith('Bearer ')) {
+//      return authorization.replace('Bearer ', '')
+//      }
+//      return null
+//    }
 
 
 blogsRouter.get('/', async (request, response) => {      // huom! ei siis enää tarvitse /api/blogs
@@ -30,7 +28,10 @@ blogsRouter.post('/', async (request, response) => {
     
     const body =request.body
 
-    const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)   // 4d)
+    //const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)   // 4d)
+
+    const decodedToken = jwt.verify(request.token, process.env.SECRET)    // 4.20
+    //console.log('decodedToken', decodedToken)
       if (!decodedToken.id) {
         return response.status(401).json({ error: 'token invalid' })
     } 
