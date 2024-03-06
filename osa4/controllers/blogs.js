@@ -2,6 +2,7 @@ const blogsRouter = require('express').Router()   // kaikki blogeihin liittyvät
 const Blog = require('../models/blog')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')     // muistiinpanojen luominen vain kirjautuneille
+const { userExtractor } = require('../utils/middleware')
 
 
 //const getTokenFrom = request => {
@@ -24,19 +25,19 @@ blogsRouter.get('/', async (request, response) => {      // huom! ei siis enää
     })
 
 
-blogsRouter.post('/', async (request, response) => {
-    
+blogsRouter.post('/', userExtractor, async (request, response) => {
+
     const body =request.body
-
-    //const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)   // 4d)
-
-    const decodedToken = jwt.verify(request.token, process.env.SECRET)    // 4.20
-    //console.log('decodedToken', decodedToken)
-      if (!decodedToken.id) {
-        return response.status(401).json({ error: 'token invalid' })
-    } 
+    const user = request.user     // 4.22 käytetään user extractoria
     
-    const user = await User.findById(decodedToken.id)   // 4d)
+    //const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)   // 4d)
+    // const decodedToken = jwt.verify(request.token, process.env.SECRET)    // 4.20
+    ////console.log('decodedToken', decodedToken)
+    //  if (!decodedToken.id) {
+    //    return response.status(401).json({ error: 'token invalid' })
+    //} 
+    
+    //const user = await User.findById(decodedToken.id)   // 4d) token mukana (4.20 thets)
 
 
     //const user = await User.findById(body.userId)      // lisäys 4c):ssä
@@ -71,14 +72,17 @@ blogsRouter.post('/', async (request, response) => {
   })
 
 
-  blogsRouter.delete('/:id', async (request, response) => {
-    const decodedToken = jwt.verify(request.token, process.env.SECRET)    // 4.21
-    //console.log('decodedToken', decodedToken)
-      if (!decodedToken.id) {   //4.21
-        return response.status(401).json({ error: 'token invalid' })
-    } 
+  blogsRouter.delete('/:id', userExtractor, async (request, response) => {    //4.22
+
+    const user = request.user  // 4.22 luotu middleware userExtractor
+
+    //const decodedToken = jwt.verify(request.token, process.env.SECRET)    // 4.21
+    ////console.log('decodedToken', decodedToken)  
+    //if (!decodedToken.id) {   //4.21
+    //    return response.status(401).json({ error: 'token invalid' })
+    //} 
+    //const user = await User.findById(decodedToken.id) /// 4.22
     
-    const user = await User.findById(decodedToken.id) /// 4.21
     const blog = await Blog.findById(request.params.id)
     //console.log('nykyinen user', user)
     //console.log('deletoitava blogi', blog)
