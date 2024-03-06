@@ -34,7 +34,7 @@ const tokenExtractor = (request, response, next) => {
   // tokenin ekstraktoiva koodi
   const authorization = request.get('authorization')
   if (authorization && authorization.startsWith('Bearer ')) {
-    console.log('authorization', authorization)
+    //console.log('authorization', authorization)
     //return authorization  //.replace('Bearer', '')
     request.token = authorization.replace('Bearer ', '')
   }
