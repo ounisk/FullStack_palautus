@@ -72,9 +72,28 @@ blogsRouter.post('/', async (request, response) => {
 
 
   blogsRouter.delete('/:id', async (request, response) => {
-    await Blog.findByIdAndDelete(request.params.id)
-    response.status(204).end()
-  })
+    const decodedToken = jwt.verify(request.token, process.env.SECRET)    // 4.21
+    //console.log('decodedToken', decodedToken)
+      if (!decodedToken.id) {   //4.21
+        return response.status(401).json({ error: 'token invalid' })
+    } 
+    
+    const user = await User.findById(decodedToken.id) /// 4.21
+    const blog = await Blog.findById(request.params.id)
+    //console.log('nykyinen user', user)
+    //console.log('deletoitava blogi', blog)
+    
+    if (blog.user.toString() === user.id.toString() ) {
+      await Blog.findByIdAndDelete(request.params.id)
+      response.status(204).end()
+     }  
+      else {
+        return response.status(401).json({ error: 'user can not delete blog, unauthorized' })
+      }
+
+    //await Blog.findByIdAndDelete(request.params.id)
+    //response.status(204).end()
+    })
 
   blogsRouter.put('/:id', async (request, response) => {
     //console.log("terveiset routes putista", request.body)
