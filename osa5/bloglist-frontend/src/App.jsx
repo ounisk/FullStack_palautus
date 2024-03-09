@@ -18,14 +18,14 @@ const App = () => {
   }, [])
 
 
-  //useEffect(() => {    // ei vielä 5.1
-  //    const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
-  //    if (loggedUserJSON) {
-  //        const user = JSON.parse(loggedUserJSON)
-  //        setUser(user)
-  //        blogService.setToken(user.token)
-  //      }
-  //    }, [])
+  useEffect(() => {    // ei vielä 5.1
+      const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
+      if (loggedUserJSON) {
+          const user = JSON.parse(loggedUserJSON)
+          setUser(user)
+          blogService.setToken(user.token)
+        }
+      }, [])
 
 
   const handleLogin =  async (event) => {
@@ -37,11 +37,11 @@ const App = () => {
             username, password,
         })
 
-        //window.localStorage.setItem(
-        //  'loggedBlogappUser', JSON.stringify(user)    
-        //)  
+        window.localStorage.setItem(
+          'loggedBlogappUser', JSON.stringify(user)    
+        )  
         
-        //blogService.setToken(user.token)
+        blogService.setToken(user.token)
         setUser(user)
         setUsername('')
         setPassword('')
@@ -90,6 +90,14 @@ const App = () => {
   //  </form>  
   //)
 
+  const logout = (props) => {
+    //console.log('uloskirjautuja', props)
+    window.localStorage.removeItem('loggedBlogappUser')
+    //console.log('on poistettu')
+    window.location.reload()
+    }
+  
+  
   return (
     <div>
       {!user && <div>  
@@ -99,7 +107,9 @@ const App = () => {
       }
       {user && <div>
         <h2>blogs</h2>
-        <p>{user.name} logged in</p>
+        <p>{user.name} logged in
+        <button onClick={() =>
+          logout({user })} type="submit">logout</button> </p>
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog}/>
         )}

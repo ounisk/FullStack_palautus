@@ -14,7 +14,9 @@ const getAll = () => {
 }
 
 const create = async newObject => {
-  const config = {    headers: { Authorization: token },  }
+  const config = { 
+      headers: { Authorization: token },
+      }
   const response = await axios.post(baseUrl, newObject, config)
   return response.data
 }
@@ -26,4 +28,4 @@ const update = (id, newObject) => {
 
 
 
-export default { getAll, create, update }
+export default { getAll, create, update, setToken }
