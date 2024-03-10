@@ -6,6 +6,9 @@ import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
+  const [newTitle, setNewTitle] = useState('')
+  const [newAuthor, setNewAuthor] = useState('')
+  const [newUrl, setNewUrl] = useState('')
   const [errorMessage, setErrorMessage] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('') 
@@ -18,7 +21,7 @@ const App = () => {
   }, [])
 
 
-  useEffect(() => {    // ei vielä 5.1
+  useEffect(() => {
       const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
       if (loggedUserJSON) {
           const user = JSON.parse(loggedUserJSON)
@@ -27,7 +30,18 @@ const App = () => {
         }
       }, [])
 
+  const handleTitleChange = (event) => {
+    setNewTitle(event.target.value)
+  }
 
+  const handleAuthorChange = (event) => {
+    setNewAuthor(event.target.value)
+  }
+
+  const handleUrlChange = (event) => {
+    setNewUrl(event.target.value)
+  }
+      
   const handleLogin =  async (event) => {
       event.preventDefault()
       console.log('logging in with', username, password)
@@ -80,15 +94,58 @@ const App = () => {
     </form>      
   )
 
-  //const noteForm = () => (                  ///huom! muuta kaikki NOte kohdat vastaamaan blogia?...
-  //  <form onSubmit={addNote}>
-  //    <input
-  //      value={newNote}
-  //      onChange={handleNoteChange}
-  //    />
-  //    <button type="submit">save</button>
-  //  </form>  
-  //)
+  const addBlog =  (event) =>{
+    console.log('add blog-button clicked', event.target)
+    event.preventDefault()
+   
+    const blogObject ={
+      title: newTitle,
+      author: newAuthor,
+      url: newUrl
+    }  
+
+    blogService
+      .create(blogObject)
+        .then(returnedBlog => {
+          setBlogs(blogs.concat(returnedBlog))
+
+          setNewTitle('')
+          setNewAuthor('')
+          setNewUrl('')
+        })
+    }
+  
+
+  const blogForm = () => (         
+      <form onSubmit={addBlog}>
+        <div>
+          title
+          <input
+          type ="text"
+          value={newTitle}
+          name="Title"
+          onChange = {handleTitleChange} />
+        </div>
+        <div>
+          author
+          <input
+          type ="text"
+          value={newAuthor}
+          name="Author"
+          onChange = {handleAuthorChange} />
+        </div>
+       <div>
+        url
+        <input
+          type="text"
+          value={newUrl}
+          name = "Url"
+          onChange={handleUrlChange}
+        />
+      </div>
+      <button type="submit">create</button>
+    </form>  
+  )
 
   const logout = (props) => {
     //console.log('uloskirjautuja', props)
@@ -110,6 +167,9 @@ const App = () => {
         <p>{user.name} logged in
         <button onClick={() =>
           logout({user })} type="submit">logout</button> </p>
+        <h2>create new</h2>
+        {blogForm()}
+
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog}/>
         )}
