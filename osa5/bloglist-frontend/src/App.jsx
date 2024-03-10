@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -59,8 +60,9 @@ const App = () => {
         setUser(user)
         setUsername('')
         setPassword('')
-      } catch (exception) {
-          setErrorMessage('wrong credentials')
+      } 
+        catch (exception) {
+          setErrorMessage('wrong username or password')
           setTimeout(() => {
             setErrorMessage(null)
           }, 5000)
@@ -109,11 +111,22 @@ const App = () => {
         .then(returnedBlog => {
           setBlogs(blogs.concat(returnedBlog))
 
+          console.log("vahvistus lisäyksestä")
+          //.catch(error)
+          setErrorMessage(
+            `a new blog "${blogObject.title}" by ${blogObject.author} was added`
+              )
+          setTimeout(() => {
+            setErrorMessage(null)
+            }, 5000)
+
           setNewTitle('')
           setNewAuthor('')
           setNewUrl('')
         })
-    }
+        
+        } //)
+         
   
 
   const blogForm = () => (         
@@ -159,11 +172,13 @@ const App = () => {
     <div>
       {!user && <div>  
         <h2> Log in to application</h2>
+        <Notification message={errorMessage} />
        {loginForm()}
         </div>
       }
       {user && <div>
         <h2>blogs</h2>
+        <Notification message={errorMessage} />
         <p>{user.name} logged in
         <button onClick={() =>
           logout({user })} type="submit">logout</button> </p>
