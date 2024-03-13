@@ -101,9 +101,11 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
 
   blogsRouter.put('/:id', async (request, response) => {
     //console.log("terveiset routes putista", request.body)
+    //const user = request.user
+    //console.log("putista user/luoja", user._id)     // 5.9 alle lisätty populate niin liketyksen jälkeen user mukana
     const {title, author, url, likes} = request.body
     const updatedBlog = await Blog.findByIdAndUpdate(request.params.id,
-      { title, author, url, likes }, {new: true, runValidators:true, context:'query' })
+      { title, author, url, likes}, {new: true, runValidators:true, context:'query' }).populate('user', { name: 1})
 
     response.status(200).json(updatedBlog)  
   })  
