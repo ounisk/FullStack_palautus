@@ -105,8 +105,8 @@ const App = () => {
     blogService
       .create(blogObject)
         .then(returnedBlog => {
-          setBlogs(blogs.concat(returnedBlog))
-
+          //setBlogs(blogs.concat(returnedBlog))
+          setBlogs(blogs.concat({...returnedBlog, user}))  // tämä avulla lisäyksen jälkeen user näkyy, ei tarvi refresh
           console.log("vahvistus lisäyksestä")
           //.catch(error)
           setErrorMessage(
@@ -123,6 +123,20 @@ const App = () => {
         
         } //)
          
+  const addLikes = (id) => {
+    //console.log('testataan addLike_id', id)
+    const blog = blogs.find(blog => blog.id === id) 
+      const updatedBlog = { ...blog, likes: blog.likes+1 } 
+      //console.log('updated blog mm. likes', updatedBlog)
+        blogService                              
+        .update(blog.id, updatedBlog)          
+        .then(returnedBlog => { 
+            console.log('returned blog', returnedBlog)
+            console.log('muutos blog_likes', returnedBlog.likes)  
+            setBlogs(blogs.map(blog => blog.id !== returnedBlog.id ? blog : returnedBlog))   
+          })
+  }      
+
 
   const logout = (props) => {
     //console.log('uloskirjautuja', props)
@@ -141,7 +155,7 @@ const App = () => {
         </div>
       }
       {user && <div>
-        <h2>blogs</h2>
+        <h2>Blogs</h2>
         <Notification message={errorMessage} />
         <p>{user.name} logged in
         <button onClick={() =>
@@ -152,7 +166,7 @@ const App = () => {
         </Togglable>
 
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog}/>
+          <Blog key={blog.id} blog={blog} addLikes={addLikes}/>
         )}
       </div>
       }
