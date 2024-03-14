@@ -5,20 +5,7 @@ const jwt = require('jsonwebtoken')     // muistiinpanojen luominen vain kirjaut
 const { userExtractor } = require('../utils/middleware')
 
 
-//const getTokenFrom = request => {
-//    const authorization = request.get('authorization')
-//      if (authorization && authorization.startsWith('Bearer ')) {
-//      return authorization.replace('Bearer ', '')
-//      }
-//      return null
-//    }
-
-
 blogsRouter.get('/', async (request, response) => {      // huom! ei siis enää tarvitse /api/blogs
-    //Blog
-    //  .find({})
-    //  .then(blogs => {
-    //    response.json(blogs)
     const blogs = await Blog      // tässä refakotoitu promiseista async/await:iin
       .find({}).populate('user', {username: 1, name: 1})    //tämä tehty populate, 4c):ssä
     response.json(blogs) 
@@ -73,7 +60,7 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
 
 
   blogsRouter.delete('/:id', userExtractor, async (request, response) => {    //4.22
-
+    //console.log("terkut deletestä")
     const user = request.user  // 4.22 luotu middleware userExtractor
 
     //const decodedToken = jwt.verify(request.token, process.env.SECRET)    // 4.21

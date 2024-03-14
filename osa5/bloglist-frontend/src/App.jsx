@@ -131,11 +131,37 @@ const App = () => {
         blogService                              
         .update(blog.id, updatedBlog)          
         .then(returnedBlog => { 
-            console.log('returned blog', returnedBlog)
-            console.log('muutos blog_likes', returnedBlog.likes)  
+            //console.log('returned blog', returnedBlog)
+            //console.log('muutos blog_likes', returnedBlog.likes)  
             setBlogs(blogs.map(blog => blog.id !== returnedBlog.id ? blog : returnedBlog))   
           })
-  }      
+    }      
+
+    const removeBlog = (id) => {
+      //const {blog} = props
+      //const {id} = blog.id
+      //console.log("poistettava id", id)
+      const blog = blogs.find(blog => blog.id === id) // tämä lisätty
+      //console.log("poistettava blog", blog)
+      if (window.confirm(`Remove blog "${blog.title}" by ${blog.author}?`)){
+       blogService
+        .remove(blog.id)
+        .then(() =>
+          blogService
+          .getAll()
+            .then((response => setBlogs(response)))
+            
+          )}    
+          //console.log("siivottu lista", blogs)  
+          //console.log("vahvistus poistosta")
+          setErrorMessage(
+            `${blog.title} was deleted`
+              )
+          setTimeout(() => {
+            setErrorMessage(null)
+            }, 5000)
+       }  
+
 
 
   const logout = (props) => {
@@ -165,7 +191,7 @@ const App = () => {
 
         </Togglable>
         {blogs.sort((a,b)=> b.likes - a.likes).map(blog =>
-          <Blog key={blog.id} blog={blog} addLikes={addLikes}/>
+          <Blog key={blog.id} blog={blog} addLikes={addLikes} removeBlog ={removeBlog} user={user}/>
         )}
       </div>
       }
