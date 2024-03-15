@@ -1,6 +1,7 @@
 import { useState } from 'react'
+import PropTypes from 'prop-types'
 
-const Blog = ({ blog, addLikes, removeBlog, user}) => {
+const Blog = ({ blog, addLikes, removeBlog, user }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -20,37 +21,43 @@ const Blog = ({ blog, addLikes, removeBlog, user}) => {
     addLikes(blog.id)
   }
 
-  const removeBlogs = () =>{
+  const removeBlogs = () => {
     removeBlog(blog.id)
   }
- 
+
   // nappula deletointiin joka näkyy jos
 
   const RemoveButton = () => {
     //console.log("user", user)
     if (user.name === blog.user.name){
-    return (
-      <div>
-      <button onClick = {removeBlogs}>remove</button>
-      </div> 
-    )}
+      return (
+        <div>
+          <button onClick = {removeBlogs}>remove</button>
+        </div>
+      )}
   }
 
   return (
     <div style={blogStyle}>
-  <div>
-    <div style={hideWhenVisible}>
-    {blog.title} <button onClick={() => setVisible(true)}>view</button>
-    </div>
-    <div style={showWhenVisible}>
-    {blog.title}  {blog.author} <button onClick={toggleVisibility}>hide</button>
-    <br></br> 
-     {blog.url}  <br></br>likes {blog.likes} <button onClick={addLike}>like</button>  <br></br>{blog.user.name} <br></br>
-     <RemoveButton/>
-     </div>
-  </div>  
-  
-  </div>
-)}
+      <div>
+        <div style={hideWhenVisible}>
+          {blog.title} <button onClick={() => setVisible(true)}>view</button>
+        </div>
+        <div style={showWhenVisible}>
+          {blog.title}  {blog.author} <button onClick={toggleVisibility}>hide</button>
+          <br></br>
+          {blog.url}  <br></br>likes {blog.likes} <button onClick={addLike}>like</button>  <br></br>{blog.user.name} <br></br>
+          <RemoveButton/>
+        </div>
+      </div>
 
+    </div>
+  )}
+
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  addLikes: PropTypes.func.isRequired,
+  removeBlog: PropTypes.func.isRequired,
+  user: PropTypes.object.isRequired,
+}
 export default Blog
