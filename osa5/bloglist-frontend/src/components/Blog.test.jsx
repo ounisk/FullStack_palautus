@@ -34,7 +34,7 @@ test('renders blog title', () => {
 })
 
 
-  test('clicking the view button shows url, likes&number and user, ', async () => {
+test('clicking the view button shows url, likes&number and user, ', async () => {
     const userCurrent = {
         username:'tikku',
         name: 'Tiina Teikku',
@@ -78,4 +78,47 @@ test('renders blog title', () => {
 
 
     //expect(mockHandler.mock.calls).toHaveLength(1)   // tällä tulee 0
-  })
+    })     
+
+
+
+test('clicking the likes button twice calls event handler twice', async () => {
+    const userCurrent = {
+        username:'tikku',
+        name: 'Tiina Teikku',
+        password: 'salasana'
+    } 
+
+  const blog = {
+    title: 'Suomalaisuuden ydintä etsimässä',
+    author: 'Seppo Suominen',
+    url: 'www.suomi.fi',
+    likes: 99,
+    user: {
+        username:'tikku',
+        name: 'Tiina Teikku',
+        password: 'salasana'
+    } 
+  }
+    
+    const mockHandler = vi.fn()    
+    const mockHandlerLikes = vi.fn()
+
+    render(
+        <Blog blog={blog} user={userCurrent} toggleVisibility={mockHandler} addLikes={mockHandlerLikes}/>
+      )
+    
+    const user = userEvent.setup()
+
+    const button = screen.getByText('view')
+    await user.click(button)
+
+    const button1 = screen.getByText('like')
+    await user.click(button1)
+    const button2 = screen.getByText('like')
+    await user.click(button2)
+
+    expect(mockHandlerLikes.mock.calls).toHaveLength(2)
+
+
+    })
