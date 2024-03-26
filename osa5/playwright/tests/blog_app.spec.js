@@ -55,4 +55,22 @@ describe('Login', () => {
       })
 
     })
+
+describe('When logged in', () => {
+    beforeEach(async ({ page }) => {
+        await loginWith(page, 'mluukkai', 'salainen')
+        await page.getByRole('button', { name: 'login' }).click()
+    })
+    
+    test('a new blog can be created', async ({ page }) => {
+        await page.getByRole('button', { name: 'create new blog' }).click()
+        await page.getByTestId('title-input').fill('Playwrightin testauksesta')
+        await page.getByTestId('author-input').fill('Pelle Peloton')
+        await page.getByTestId('url-input').fill('www.playwrightkunkut.fi')
+        await page.getByRole('button', { name: 'create' }).click()
+        await expect(page.getByText('Playwrightin testauksesta view')).toBeVisible()
+    })
+    })
+
+
 })
