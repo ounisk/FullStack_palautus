@@ -23,4 +23,32 @@ test('front page can be opened', async ({ page }) => {
   await expect(locator).toBeVisible()
   //await expect(page.getByText('Note app, Department of Computer Science, University of Helsinki 2023')).toBeVisible()
 })
+
+
+describe('Login', () => {
+    test('succeeds with correct credetials', async ({ page }) => {
+        //await page.goto('http://localhost:5174')
+        await page.getByTestId('username').fill('mluukkai')
+        await page.getByTestId('password').fill('salainen')
+    
+        await page.getByRole('button', { name: 'login' }).click()
+        await expect(page.getByText('Matti Luukkainen logged in')).toBeVisible()
+    })
+
+
+    test('fails with wrong credentials', async ({ page }) => {
+        await page.getByTestId('username').fill('mluukkai')
+        await page.getByTestId('password').fill('salkku')
+    
+        await page.getByRole('button', { name: 'login' }).click()
+
+        const errorDiv = await page.locator('.wronginfo')
+        await expect(errorDiv).toContainText('wrong username or password')
+        await expect(errorDiv).toHaveCSS('border-style', 'solid')
+        await expect(errorDiv).toHaveCSS('color', 'rgb(255, 0, 0)')
+
+        await expect(page.getByText('Matti Luukkainen logged in')).not.toBeVisible()
+      })
+
+    })
 })
